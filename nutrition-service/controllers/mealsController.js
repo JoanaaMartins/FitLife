@@ -47,7 +47,7 @@ exports.updateMeal = async (req, res) => {
     }
 };
 
-// Reports Controller
+// não sei se faz sentido
 exports.getUserReports = async (req, res) => {
     try {
       const { user_id } = req.params;
