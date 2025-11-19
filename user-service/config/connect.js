@@ -1,15 +1,25 @@
-import mysql from "mysql2/promise";
+// config/connect.js
+import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-const connection = await mysql.createConnection({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "",
-  database: process.env.DATABASE || "users_db",
-});
+const sequelize = new Sequelize(
+  process.env.DATABASE || "users_db",
+  process.env.DB_USER || "root",
+  process.env.DB_PASSWORD || "",
+  {
+    host: process.env.DB_HOST || "localhost",
+    dialect: "mysql",
+    logging: false, 
+  }
+);
 
-console.log("Connected to MySQL server");
+try {
+  await sequelize.authenticate();
+  console.log("Sequelize: Conectado ao MySQL com sucesso!");
+} catch (error) {
+  console.error("Sequelize: Não foi possível conectar ao banco de dados:", error);
+}
 
-export default connection;
+export default sequelize;
