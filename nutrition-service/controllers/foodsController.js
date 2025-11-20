@@ -1,12 +1,11 @@
 const Food = require('../models/food');
 // o que tem que ter aqui:
 // - Post alimento  ✅
-// - Patch alimento 
+// - Patch alimento  ✅
 // - Get todos alimentos ✅
 // - Get alimento e ver os valores nutricionais
-// - get alimento por nome
-// - Delete alimento
-
+// - get alimento por nome  ✅
+// - Delete alimento  ✅
 
 exports.getFoods = async (req, res) => {
   try {
@@ -24,6 +23,34 @@ exports.getFoods = async (req, res) => {
   }
 };
 
+exports.getFoodById = async (req, res) => {
+  try {
+    const { food_id } = req.params;
+    const food = await Food.findById(food_id);
+    
+    if (!food) {
+      return res.status(404).json({ error: 'Food not found' });
+    }
+    
+    res.json(food);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getFoodByName = async (req, res) => {
+  try {
+    const { food_name } = req.params;
+    const foods = await Food.find({ 
+      name: { $regex: food_name, $options: 'i' } 
+    });
+    
+    res.json(foods);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 exports.createFood = async (req, res) => {
   try {
     const food = new Food(req.body);
@@ -34,20 +61,37 @@ exports.createFood = async (req, res) => {
   }
 }; 
 
-// exports.editFood = async (req, res) => {  
-//   try { 
-//     const { food_id } = req.params;
-//     const food = await Food.findByIdAndUpdate(
-//       food_id,
-//       req.body,
-//       { new: true, runValidators: true }
-//     );
-//     if (!food) {
-//       return res.status(404).json({ error: 'Food not found' });
-//     }
-//     res.json(food);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// }; 
+exports.editFood = async (req, res) => {  
+  try { 
+    const { food_id } = req.params;
+    const food = await Food.findByIdAndUpdate(
+      food_id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    
+    if (!food) {
+      return res.status(404).json({ error: 'Food not found' });
+    }
+    
+    res.json(food);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.deleteFood = async (req, res) => {
+  try {
+    const { food_id } = req.params;
+    const food = await Food.findByIdAndDelete(food_id);
+    
+    if (!food) {
+      return res.status(404).json({ error: 'Food not found' });
+    }
+    
+    res.json({ message: 'Food deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
