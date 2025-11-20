@@ -7,7 +7,7 @@ import {
   updateUser,
   deleteUser,
 } from "../controllers/userController.js";
-import { hashPassword } from "../middleware/authMiddleware.js";
+import { hashPassword } from "../middlewares/authMiddleware.js";
 import { authProtect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
