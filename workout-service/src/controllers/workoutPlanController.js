@@ -39,3 +39,47 @@ exports.createWorkoutPlan = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+// Get workout plan by ID
+exports.getWorkoutPlanById = async (req, res) => {
+    try {
+        const workoutPlan = await WorkoutPlan.findById(req.params.id).populate('exercises').select('-__v');
+        if (!workoutPlan) {
+            return res.status(404).json({ error: 'Workout plan not found' });
+        }
+        res.json(workoutPlan);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Update workout plan by ID
+exports.updateWorkoutPlanById = async (req, res) => {
+    try {
+        const { name, goal_type, difficulty, duration_min, exercises } = req.body;
+        const updatedWorkoutPlan = await WorkoutPlan.findByIdAndUpdate(
+            req.params.id,
+            { name, goal_type, difficulty, duration_min, exercises },
+            { new: true }
+        ).populate('exercises').select('-__v');
+        if (!updatedWorkoutPlan) {
+            return res.status(404).json({ error: 'Workout plan not found' });
+        }
+        res.json(updatedWorkoutPlan);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Delete workout plan by ID
+exports.deleteWorkoutPlanById = async (req, res) => {
+    try {
+        const deletedWorkoutPlan = await WorkoutPlan.findByIdAndDelete(req.params.id);
+        if (!deletedWorkoutPlan) {
+            return res.status(404).json({ error: 'Workout plan not found' });
+        }
+        res.json({ message: 'Workout plan deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

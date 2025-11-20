@@ -58,3 +58,32 @@ exports.createUserWorkout = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+// Get UserWorkout by ID
+exports.getUserWorkoutById = async (req, res) => {
+    try {
+        const userWorkout = await UserWorkout.findById(req.params.id).select('user_id workout_plan_id date duration kcal_lost_sum progress');
+
+        if (!userWorkout) {
+            return res.status(404).json({ error: 'User workout not found' });
+        }
+        res.json(userWorkout);
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Delete UserWorkout by ID
+exports.deleteUserWorkoutById = async (req, res) => {
+    try {
+        const userWorkout = await UserWorkout.findByIdAndDelete(req.params.id);
+
+        if (!userWorkout) {
+            return res.status(404).json({ error: 'User workout not found' });
+        }
+        res.json({ message: 'User workout deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

@@ -28,3 +28,29 @@ exports.createExercise = async (req, res) => {
 
   }
 };
+
+// Get exercise by ID
+exports.getExerciseById = async (req, res) => {
+  try {
+    const exercise = await Exercise.findById(req.params.id);
+    if (!exercise) {
+      return res.status(404).json({ error: 'Exercise not found' });
+    }
+    res.json(exercise);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Delete exercise by ID
+exports.deleteExerciseById = async (req, res) => {
+  try {
+    const exercise = await Exercise.findByIdAndDelete(req.params.id);
+    if (!exercise) {
+      return res.status(404).json({ error: 'Exercise not found' });
+    }
+    res.json({ message: 'Exercise deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
