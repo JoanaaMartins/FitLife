@@ -1,12 +1,12 @@
-import Measurement from "../models/measurementModel.js";
-import User from "../models/userModel.js";
+import db from "../models/db.js";
 
 export const createMeasurement = async (req, res) => {
   try {
     const { date, weight_kg, height_cm, body_fat_pct } = req.body;
 
-    const measurement = await Measurement.create({
+    const measurement = await db.Measurement.create({
       user_id: req.user.id,
+      date,
       weight_kg,
       height_cm,
       body_fat_pct,
@@ -20,7 +20,7 @@ export const createMeasurement = async (req, res) => {
 
 export const getAllMeasurements = async (req, res) => {
   try {
-    const measurements = await Measurement.findAll({
+    const measurements = await db.Measurement.findAll({
       where: { user_id: req.user.id },
       include: User,
     });
@@ -32,7 +32,7 @@ export const getAllMeasurements = async (req, res) => {
 
 export const getMeasurementById = async (req, res) => {
   try {
-    const measurement = await Measurement.findOne({
+    const measurement = await db.Measurement.findOne({
       where: { id: req.params.id, user_id: req.user.id },
       include: User,
     });
@@ -47,7 +47,7 @@ export const getMeasurementById = async (req, res) => {
 
 export const updateMeasurement = async (req, res) => {
   try {
-    const measurement = await Measurement.findOne({
+    const measurement = await db.Measurement.findOne({
       where: { id: req.params.id, user_id: req.user.id },
     });
 
@@ -63,7 +63,7 @@ export const updateMeasurement = async (req, res) => {
 
 export const deleteMeasurement = async (req, res) => {
   try {
-    const measurement = await Measurement.findOne({
+    const measurement = await db.Measurement.findOne({
       where: { id: req.params.id, user_id: req.user.id },
     });
 

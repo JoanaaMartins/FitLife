@@ -12,7 +12,7 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
+    dialect: 'mysql',
     pool: {
       max: 5,
       min: 0,
@@ -43,7 +43,7 @@ db.Measurement.belongsTo(db.User, {
   onDelete: "CASCADE",
   allowNull: false,
 });
-db.User.hasMany(db.Measurements, {
+db.User.hasMany(db.Measurement, {
   foreignKey: "user_id",
   onDelete: "CASCADE",
   allowNull: false,
@@ -55,7 +55,7 @@ db.Goal.belongsTo(db.User, {
   onDelete: "CASCADE",
   allowNull: false,
 });
-db.User.hasMany(db.Goals, {
+db.User.hasMany(db.Goal, {
   foreignKey: "user_id",
   onDelete: "CASCADE",
   allowNull: false,

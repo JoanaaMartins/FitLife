@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
+import db from "../models/db.js";
 
 dotenv.config();
 
@@ -33,7 +34,7 @@ export const authProtect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findByPk(decoded.id);
+    const user = await db.User.findByPk(decoded.id);
     if (!user) return res.status(401).json({ error: "User not found" });
 
     req.user = user;
@@ -45,7 +46,7 @@ export const authProtect = async (req, res, next) => {
 
 // Verificar se o user está autenticado
 export const validateUser = async (email, password) => {
-  const user = await User.findOne({ where: { email } });
+  const user = await db.User.findOne({ where: { email } });
   if (!user) return null;
 
   const isMatch = await bcrypt.compare(password, user.password);

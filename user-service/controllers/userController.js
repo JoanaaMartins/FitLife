@@ -1,5 +1,5 @@
-import User from "../models/userModel.js";
 import { validateUser, generateToken } from "../middlewares/authMiddleware.js";
+import db from "../models/db.js";
 
 
 export const getCurrentUser = async (req, res) => {
@@ -35,7 +35,7 @@ export const loginUser = async (req, res) => {
 export const createUser = async (req, res) => {
   try {
     const { name, email, password, gender, birth_date, role } = req.body;
-    const user = await User.create({
+    const user = await db.User.create({
       name,
       email,
       password,
@@ -57,7 +57,7 @@ export const getAllUsers = async (req, res) => {
     if (req.user.role !== "admin")
       return res.status(403).json({ error: "Admin access only" });
 
-    const users = await User.findAll();
+    const users = await db.User.findAll();
     res.json(users);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -66,7 +66,7 @@ export const getAllUsers = async (req, res) => {
 
 export const getUserById = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await db.User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     if (req.user.id !== user.id && req.user.role !== "admin") {
@@ -81,7 +81,7 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await db.User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     if (req.user.id !== user.id && req.user.role !== "admin") {
@@ -97,7 +97,7 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
+    const user = await db.User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
     if (req.user.id !== user.id && req.user.role !== "admin") {
