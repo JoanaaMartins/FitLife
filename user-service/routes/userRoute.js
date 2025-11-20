@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getCurrentUser,
   loginUser,
   createUser,
   getAllUsers,
@@ -17,6 +18,7 @@ router.post("/login", loginUser);
 
 router.use(authProtect);
 
+router.get("/me", getCurrentUser);
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);
 router.put("/:id", updateUser);

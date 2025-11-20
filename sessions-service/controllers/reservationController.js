@@ -1,0 +1,124 @@
+// CRUD Básico (com authProtect)
+export const getAllReservations = async (req, res) => {
+  try {
+    const reservations = await db.Reservation.findAll({
+      include: [db.Class]
+    });
+    res.json(reservations);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const getReservationById = async (req, res) => {
+  try {
+    const reservation = await db.Reservation.findByPk(req.params.id, {
+      include: [db.Class]
+    });
+    if (!reservation) return res.status(404).json({ error: 'Reservation not found' });
+    res.json(reservation);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const createReservation = async (req, res) => {
+  try {
+    const { class_id } = req.body;
+    
+    // Verificar se a aula existe e tem vagas
+    const classItem = await db.Class.findByPk(class_id, {
+      include: [{
+        model: db.Reservation,
+        attributes: ['id']
+      }]
+    });
+    
+    if (!classItem) {
+      return res.status(404).json({ error: 'Class not found' });
+    }
+    
+    if (classItem.Reservations.length >= classItem.capacity) {
+      return res.status(400).json({ error: 'Class is full' });
+    }
+    
+    // Criar reserva associada ao user autenticado
+    const reservation = await db.Reservation.create({
+      class_id,
+      user_id: req.user.id,
+      user_email: req.user.email,
+      status: 'confirmed'
+    });
+    
+    res.status(201).json({
+      message: 'Reservation created successfully',
+      reservation
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const updateReservation = async (req, res) => {
+  try {
+    const reservation = await db.Reservation.findByPk(req.params.id);
+    if (!reservation) return res.status(404).json({ error: 'Reservation not found' });
+    
+    await reservation.update(req.body);
+    res.json(reservation);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const deleteReservation = async (req, res) => {
+  try {
+    const reservation = await db.Reservation.findByPk(req.params.id);
+    if (!reservation) return res.status(404).json({ error: 'Reservation not found' });
+    
+    await reservation.destroy();
+    res.json({ message: 'Reservation deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Funções Adicionais (com authProtect)
+export const getUserReservations = async (req, res) => {
+  try {
+    const reservations = await db.Reservation.findAll({
+      where: { user_id: req.user.id },
+      include: [{
+        model: db.Class,
+        include: [db.Instructor]
+      }]
+    });
+    
+    res.json(reservations);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export const cancelReservation = async (req, res) => {
+  try {
+    const reservation = await db.Reservation.findOne({
+      where: { 
+        id: req.params.id, 
+        user_id: req.user.id 
+      }
+    });
+    
+    if (!reservation) {
+      return res.status(404).json({ 
+        error: 'Reservation not found or does not belong to user' 
+      });
+    }
+    
+    await reservation.update({ status: 'cancelled' });
+    res.json({ message: 'Reservation cancelled successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+

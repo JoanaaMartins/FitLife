@@ -1,6 +1,22 @@
 import User from "../models/userModel.js";
 import { validateUser, generateToken } from "../middlewares/authMiddleware.js";
 
+
+export const getCurrentUser = async (req, res) => {
+  try {
+
+    res.json({
+      id: req.user.id,
+      name: req.user.name,
+      email: req.user.email,
+      role: req.user.role,
+
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
