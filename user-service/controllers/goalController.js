@@ -1,11 +1,10 @@
-import Goal from "../models/goalModel.js";
-import User from "../models/userModel.js";
+import db from "../models/db.js";
 
 export const createGoal = async (req, res) => {
   try {
     const { type, target_value, unit, target_date, status } = req.body;
 
-    const goal = await Goal.create({
+    const goal = await db.Goal.create({
       user_id: req.user.id,
       type,
       target_value,
@@ -22,9 +21,9 @@ export const createGoal = async (req, res) => {
 
 export const getAllGoals = async (req, res) => {
   try {
-    const goals = await Goal.findAll({
+    const goals = await db.Goal.findAll({
       where: { user_id: req.user.id },
-      include: User,
+      include: db.User,
     });
     res.json(goals);
   } catch (err) {
@@ -34,9 +33,9 @@ export const getAllGoals = async (req, res) => {
 
 export const getGoalById = async (req, res) => {
   try {
-    const goal = await Goal.findOne({
+    const goal = await db.Goal.findOne({
       where: { id: req.params.id, user_id: req.user.id },
-      include: User,
+      include: db.User,
     });
 
     if (!goal) return res.status(404).json({ error: "Goal not found" });
@@ -48,7 +47,7 @@ export const getGoalById = async (req, res) => {
 
 export const updateGoal = async (req, res) => {
   try {
-    const goal = await Goal.findOne({
+    const goal = await db.Goal.findOne({
       where: { id: req.params.id, user_id: req.user.id },
     });
 
@@ -63,7 +62,7 @@ export const updateGoal = async (req, res) => {
 
 export const deleteGoal = async (req, res) => {
   try {
-    const goal = await Goal.findOne({
+    const goal = await db.Goal.findOne({
       where: { id: req.params.id, user_id: req.user.id },
     });
 

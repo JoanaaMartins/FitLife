@@ -1,4 +1,5 @@
-// CRUD Básico
+import db from '../models/db.js';
+
 export const getAllInstructors = async (req, res) => {
   try {
     const instructors = await db.Instructor.findAll();

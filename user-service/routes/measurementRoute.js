@@ -11,13 +11,13 @@ const router = express.Router();
 
 router.use(authProtect);
 
-router.post("/", createMeasurement);
+router.post("/", createMeasurement); //✅
 
-router.get("/", getAllMeasurements);
+router.get("/", getAllMeasurements); //✅
 
-router.get("/:id", getMeasurementById);
+router.get("/:id", getMeasurementById); //✅
 
-router.put("/:id", updateMeasurement);
+router.put("/:id", updateMeasurement); //✅
 
 router.delete("/:id", deleteMeasurement);
 

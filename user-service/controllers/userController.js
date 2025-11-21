@@ -54,9 +54,7 @@ export const createUser = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
-    if (req.user.role !== "admin")
-      return res.status(403).json({ error: "Admin access only" });
-
+  
     const users = await db.User.findAll();
     res.json(users);
   } catch (err) {
@@ -69,7 +67,7 @@ export const getUserById = async (req, res) => {
     const user = await db.User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    if (req.user.id !== user.id && req.user.role !== "admin") {
+    if (req.user.id !== user.id && req.user.role !== "instructor") {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -84,7 +82,7 @@ export const updateUser = async (req, res) => {
     const user = await db.User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    if (req.user.id !== user.id && req.user.role !== "admin") {
+    if (req.user.id !== user.id && req.user.role !== "instructor") {
       return res.status(403).json({ error: "Access denied" });
     }
 
@@ -100,7 +98,7 @@ export const deleteUser = async (req, res) => {
     const user = await db.User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    if (req.user.id !== user.id && req.user.role !== "admin") {
+    if (req.user.id !== user.id && req.user.role !== "instructor") {
       return res.status(403).json({ error: "Access denied" });
     }
 

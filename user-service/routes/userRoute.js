@@ -17,11 +17,12 @@ router.post("/", hashPassword, createUser); //✅
 
 router.post("/login", loginUser); //✅
 
+router.get("/", getAllUsers); //✅
+
 router.use(authProtect);
 
 router.get("/me", getCurrentUser); //✅
 
-router.get("/", getAllUsers); //✅
 
 router.get("/:id", getUserById); //✅
 

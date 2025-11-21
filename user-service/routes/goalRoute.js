@@ -11,13 +11,14 @@ const router = express.Router();
 
 router.use(authProtect);
 
-router.post("/", createGoal);
+router.post("/", createGoal); //✅
 
-router.get("/", getAllGoals);
-router.get("/:id", getGoalById);
+router.get("/", getAllGoals); //✅
 
-router.put("/:id", updateGoal);
+router.get("/:id", getGoalById); //✅
 
-router.delete("/:id", deleteGoal);
+router.put("/:id", updateGoal); //✅
+
+router.delete("/:id", deleteGoal); //✅
 
 export default router;

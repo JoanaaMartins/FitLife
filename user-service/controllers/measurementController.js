@@ -22,7 +22,7 @@ export const getAllMeasurements = async (req, res) => {
   try {
     const measurements = await db.Measurement.findAll({
       where: { user_id: req.user.id },
-      include: User,
+      include: db.User,
     });
     res.json(measurements);
   } catch (err) {
@@ -34,7 +34,7 @@ export const getMeasurementById = async (req, res) => {
   try {
     const measurement = await db.Measurement.findOne({
       where: { id: req.params.id, user_id: req.user.id },
-      include: User,
+      include: db.User,
     });
 
     if (!measurement)

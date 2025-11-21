@@ -11,9 +11,9 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-          model: 'users', 
-          key: 'id'
-        }
+          model: "users",
+          key: "id",
+        },
       },
       date: {
         type: DataTypes.DATEONLY,
@@ -33,10 +33,11 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: 'measurements',
+      tableName: "measurements",
       timestamps: false,
       underscored: true,
     }
   );
+
   return Measurement;
 };

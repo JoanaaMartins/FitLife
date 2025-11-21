@@ -30,7 +30,7 @@ export default (sequelize, DataTypes) => {
         allowNull: true,
       },
       role: {
-        type: DataTypes.ENUM('user', 'admin'),
+        type: DataTypes.ENUM('user', 'instructor'),
         defaultValue: 'user',
       },
       created_at: {
