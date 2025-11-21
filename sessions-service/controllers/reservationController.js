@@ -61,9 +61,8 @@ export const createReservation = async (req, res) => {
     }
 
     const reservation = await db.Reservation.create({
-      user_id: req.user.id,
-      user_email: req.user.email,
       class_id,
+      user_id: req.user.id,
       status: 'confirmed'
     });
 

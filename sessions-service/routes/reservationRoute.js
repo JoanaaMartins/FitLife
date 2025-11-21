@@ -13,14 +13,14 @@ import { authProtect } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 // Rotas públicas (CRUD completo)
-router.get("/", getAllReservations);
-router.get("/:id", getReservationById);
-router.put("/:id", updateReservation);
-router.delete("/:id", deleteReservation);
+router.get("/", getAllReservations); //✅
+router.get("/:id", getReservationById); //✅
+router.put("/:id", updateReservation); //✅
+router.delete("/:id", deleteReservation); //✅
 
 router.use(authProtect);
-router.get("/me/reservations", getUserReservations);
-router.post("/", createReservation);
-router.patch("/:id", cancelReservation);
+router.get("/", getUserReservations); //✅
+router.post("/", createReservation); //✅
+router.patch("/:id", cancelReservation); //✅
 
 export default router;
