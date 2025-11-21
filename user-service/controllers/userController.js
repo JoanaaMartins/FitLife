@@ -4,16 +4,33 @@ import db from "../models/db.js";
 
 export const getCurrentUser = async (req, res) => {
   try {
+    const userId = req.user.id;
+
+    const user = await db.User.findOne({
+      where: { id: userId },
+      attributes: ["id", "name", "email", "role"],
+      include: req.user.role === "user" ? [
+        {
+          model: db.Measurement,
+          attributes: ["date", "weight_kg", "height_cm", "body_fat_pct"],
+        },
+        {
+          model: db.Goal,
+          attributes: ["type", "target_value", "unit", "target_date", "status"],
+        },
+      ] : [], // instrutores não têm medidas/goals
+    });
+
+    if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
 
     res.json({
-      id: req.user.id,
-      name: req.user.name,
-      email: req.user.email,
-      role: req.user.role,
-
+      name: user.name,
+      email: user.email,
+      measurements: user.Measurements || [],
+      goals: user.Goals || [],
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -62,20 +79,50 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-export const getUserById = async (req, res) => {
+// Rota para instrutores verem medidas e metas de um aluno pelo ID
+export const getUserDetails = async (req, res) => {
   try {
-    const user = await db.User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    if (req.user.id !== user.id && req.user.role !== "instructor") {
+    // Só instrutores podem acessar
+    if (req.user.role !== "instructor") {
       return res.status(403).json({ error: "Access denied" });
     }
 
-    res.json(user);
+    const { id } = req.params;
+
+    // Buscar aluno pelo ID
+    const student = await db.User.findOne({
+      where: { id, role: "user" },
+      attributes: ["id", "name", "email"], // apenas esses campos do usuário
+      include: [
+        {
+          model: db.Measurement,
+          attributes: ["date", "weight_kg", "height_cm", "body_fat_pct"],
+        },
+        {
+          model: db.Goal,
+          attributes: ["type", "target_value", "unit", "target_date", "status"],
+        },
+      ],
+    });
+
+    if (!student) {
+      return res.status(404).json({ message: "Aluno não encontrado" });
+    }
+
+    // Montar JSON final com apenas os campos desejados
+    res.json({
+      id: student.id,
+      name: student.name,
+      email: student.email,
+      measurements: student.Measurements,
+      goals: student.Goals,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
+
 
 export const updateUser = async (req, res) => {
   try {

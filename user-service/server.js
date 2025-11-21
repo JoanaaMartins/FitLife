@@ -3,14 +3,17 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/userRoute.js";
 import goalRoutes from "./routes/goalRoute.js";
 import measurementRoutes from "./routes/measurementRoute.js";
+import { loginUser } from "./controllers/userController.js";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.DB_PORT;
 const host = process.env.DB_HOST;
+const router = express.Router();
 
 app.use(express.json());
+app.use(router);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -22,6 +25,8 @@ app.use((req, res, next) => {
   });
   next();
 });
+
+router.post("/login", loginUser);
 
 app.use("/users", userRoutes);
 
