@@ -11,13 +11,13 @@ import {
 const router = express.Router();
 
 // Rotas públicas
-router.get('/', getAllInstructors);
-router.get('/:id', getInstructorById);
-router.get('/:id/classes', getInstructorClasses);
+router.get('/', getAllInstructors); //✅
+router.get('/:id', getInstructorById); //✅
+router.get('/:id/classes', getInstructorClasses); //✅
 
 // Rotas administrativas (CRUD completo)
-router.post('/', createInstructor);
-router.put('/:id', updateInstructor);
-router.delete('/:id', deleteInstructor);
+router.post('/', createInstructor); //✅
+router.put('/:id', updateInstructor); //✅
+router.delete('/:id', deleteInstructor);  //✅
 
 export default router;
