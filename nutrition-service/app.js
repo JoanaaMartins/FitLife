@@ -14,11 +14,9 @@ app.use(cors());
 app.use(express.json());
 
 // Todas as rotas
-app.use('/api/nutrition', require('./routes/foodsRoutes'));
-app.use('/api/nutrition', require('./routes/mealsRoutes'));
-app.use('/api/nutrition', require('./routes/mealsTemplateRoutes'));
-app.use('/api/nutrition', require('./routes/reportsRoutes'));
-app.use('/api/nutrition', require('./routes/mealsPlansRoutes')); 
+app.use('/', require('./routes/foodsRoutes'));
+app.use('/', require('./routes/mealsRoutes'));
+app.use('/', require('./routes/mealsPlansRoutes')); 
 
 // Health check
 app.get('/health', (req, res) => {

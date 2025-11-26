@@ -3,7 +3,7 @@
 // - patch plano alimentar ✅
 // - get planos alimentares ✅
 // - delete plano alimentar ✅
-// - mudar plano alimentar ativo  ✅
+
 
 const MealPlan = require('../models/MealPlan');
 
@@ -24,8 +24,7 @@ exports.createMealPlan = async (req, res) => {
 exports.getUserMealPlans = async (req, res) => {
   try {
     const { user_id } = req.params;
-    const mealPlans = await MealPlan.find({ user_id })
-      .populate('planned_meals.meal_template_id');
+    const mealPlans = await MealPlan.find({ user_id });
     
     res.json(mealPlans);
   } catch (error) {
@@ -40,7 +39,7 @@ exports.updateMealPlan = async (req, res) => {
       { _id: plan_id, user_id },
       req.body,
       { new: true, runValidators: true }
-    ).populate('planned_meals.meal_template_id');
+    );
     
     if (!mealPlan) {
       return res.status(404).json({ error: 'Meal plan not found' });
@@ -70,29 +69,4 @@ exports.deleteMealPlan = async (req, res) => {
   }
 };
 
-exports.setActiveMealPlan = async (req, res) => {
-  try {
-    const { user_id, plan_id } = req.params;
-    
-    // Primeiro desativa todos os planos do usuário
-    await MealPlan.updateMany(
-      { user_id, isActive: true },
-      { isActive: false }
-    );
-    
-    // Ativa o plano específico
-    const mealPlan = await MealPlan.findOneAndUpdate(
-      { _id: plan_id, user_id },
-      { isActive: true },
-      { new: true }
-    ).populate('planned_meals.meal_template_id');
-    
-    if (!mealPlan) {
-      return res.status(404).json({ error: 'Meal plan not found' });
-    }
-    
-    res.json(mealPlan);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+
