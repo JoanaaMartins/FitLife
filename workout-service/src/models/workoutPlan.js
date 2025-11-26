@@ -30,7 +30,9 @@ const workoutPlanSchema = new mongoose.Schema({
     exercises: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Exercise' // Reference to Exercise model
-    }]
+    }
+    // sessions_per_week: FAZER 
+    ]
 },  { timestamps: false });
 
 module.exports = mongoose.model('WorkoutPlan', workoutPlanSchema);

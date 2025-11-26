@@ -24,7 +24,6 @@ const exerciseSchema = new mongoose.Schema({
         enum : {
             values: ['beginner', 'intermediate', 'advanced'],
             messsage: '{VALUE} is not supported'
-
         } 
     }, 
     video_url: { 
