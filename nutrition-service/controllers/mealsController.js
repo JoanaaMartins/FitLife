@@ -8,6 +8,7 @@ const Meal = require('../models/meal');
 
 exports.createMeal = async (req, res) => {
   try {
+    // const user_id = req.user.id
     const { user_id } = req.params;
     const mealData = { ...req.body, user_id };
     const meal = new Meal(mealData);
