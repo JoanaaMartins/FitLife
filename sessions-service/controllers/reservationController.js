@@ -1,5 +1,5 @@
-import db from '../models/db.js';
-import { Op } from 'sequelize';
+import db from "../models/db.js";
+import { publishEvent } from "../rabbitmq/producer.js";
 
 // GET all reservations (public)
 export const getAllReservations = async (req, res) => {
@@ -8,14 +8,14 @@ export const getAllReservations = async (req, res) => {
       include: [
         {
           model: db.Class,
-          include: [db.Instructor]
-        }
-      ]
+          include: [db.Instructor],
+        },
+      ],
     });
     res.json(reservations);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -26,15 +26,16 @@ export const getReservationById = async (req, res) => {
       include: [
         {
           model: db.Class,
-          include: [db.Instructor]
-        }
-      ]
+          include: [db.Instructor],
+        },
+      ],
     });
-    if (!reservation) return res.status(404).json({ error: 'Reservation not found' });
+    if (!reservation)
+      return res.status(404).json({ error: "Reservation not found" });
     res.json(reservation);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -44,32 +45,42 @@ export const createReservation = async (req, res) => {
     const { class_id } = req.body;
 
     if (!class_id) {
-      return res.status(400).json({ error: 'class_id is required' });
+      return res.status(400).json({ error: "class_id is required" });
     }
 
     const classItem = await db.Class.findByPk(class_id, {
-      include: [{ model: db.Reservation }]
+      include: [{ model: db.Reservation }],
     });
 
     if (!classItem) {
-      return res.status(404).json({ error: 'Class not found' });
+      return res.status(404).json({ error: "Class not found" });
     }
 
     // Check class capacity
     if (classItem.Reservations.length >= classItem.capacity) {
-      return res.status(400).json({ error: 'Class is full' });
+      return res.status(400).json({ error: "Class is full" });
     }
 
     const reservation = await db.Reservation.create({
       class_id,
       user_id: req.user.id,
-      status: 'confirmed'
+      status: "confirmed",
     });
 
-    res.status(201).json({ message: 'Reservation created successfully', reservation });
+    await publishEvent("reservation.confirmed", {
+      reservationId: reservation.id,
+      userId: reservation.user_id,
+      classId: reservation.class_id,
+      status: reservation.status,
+      timestamp: new Date(),
+    });
+
+    res
+      .status(201)
+      .json({ message: "Reservation created successfully", reservation });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -77,13 +88,14 @@ export const createReservation = async (req, res) => {
 export const updateReservation = async (req, res) => {
   try {
     const reservation = await db.Reservation.findByPk(req.params.id);
-    if (!reservation) return res.status(404).json({ error: 'Reservation not found' });
+    if (!reservation)
+      return res.status(404).json({ error: "Reservation not found" });
 
     await reservation.update(req.body);
     res.json(reservation);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -91,13 +103,14 @@ export const updateReservation = async (req, res) => {
 export const deleteReservation = async (req, res) => {
   try {
     const reservation = await db.Reservation.findByPk(req.params.id);
-    if (!reservation) return res.status(404).json({ error: 'Reservation not found' });
+    if (!reservation)
+      return res.status(404).json({ error: "Reservation not found" });
 
     await reservation.destroy();
-    res.json({ message: 'Reservation deleted successfully' });
+    res.json({ message: "Reservation deleted successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -109,15 +122,15 @@ export const getUserReservations = async (req, res) => {
       include: [
         {
           model: db.Class,
-          include: [db.Instructor]
-        }
-      ]
+          include: [db.Instructor],
+        },
+      ],
     });
 
     res.json(reservations);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -125,17 +138,27 @@ export const getUserReservations = async (req, res) => {
 export const cancelReservation = async (req, res) => {
   try {
     const reservation = await db.Reservation.findOne({
-      where: { id: req.params.id, user_id: req.user.id }
+      where: { id: req.params.id, user_id: req.user.id },
     });
 
     if (!reservation) {
-      return res.status(404).json({ error: 'Reservation not found or does not belong to user' });
+      return res
+        .status(404)
+        .json({ error: "Reservation not found or does not belong to user" });
     }
 
-    await reservation.update({ status: 'cancelled' });
-    res.json({ message: 'Reservation cancelled successfully', reservation });
+    await reservation.update({ status: "cancelled" });
+
+    await publishEvent("reservation.cancelled", {
+      reservationId: reservation.id,
+      userId: reservation.user_id,
+      classId: reservation.class_id,
+      status: "cancelled",
+      timestamp: new Date(),
+    });
+    res.json({ message: "Reservation cancelled successfully", reservation });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };

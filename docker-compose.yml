@@ -1,0 +1,29 @@
+
+services:
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   
+      - "15672:15672" 
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  sessions-service:
+    build: ./sessions-service
+    container_name: sessions-service
+    env_file:
+      - ./sessions-service/.env
+    depends_on:
+      - rabbitmq
+    ports:
+      - "3003:3003"
+
+  notifications-service:
+    build: ./notifications-service
+    container_name: notifications-service
+    env_file:
+      - ./notifications-service/.env
+    depends_on:
+      - rabbitmq

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import classRoutes from "./routes/classRoute.js";
 import instructorRoutes from "./routes/instructorRoute.js";
 import reservationRoutes from "./routes/reservationRoute.js";
+import { connectRabbitMQ } from "./rabbitmq/producer.js";
 
 dotenv.config();
 
@@ -82,6 +83,20 @@ app.use((err, req, res, next) => {
     .json({ error: err.message || "Internal Server Error" });
 });
 
-app.listen(port, host, () => {
-  console.log(`App listening at http://${host}:${port}/`);
-});
+const startServer = async () => {
+  try {
+    await connectRabbitMQ();
+
+    app.listen(port, host, () => {
+      console.log(`App listening at http://${host}:${port}/`);
+    });
+
+  } catch (error) {
+    console.error("❌ Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+

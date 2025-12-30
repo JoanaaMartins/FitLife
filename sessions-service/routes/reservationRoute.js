@@ -19,7 +19,7 @@ router.put("/:id", updateReservation); //✅
 router.delete("/:id", deleteReservation); //✅
 
 router.use(authProtect);
-router.get("/", getUserReservations); //✅
+router.get("/me", getUserReservations); //✅
 router.post("/", createReservation); //✅
 router.patch("/:id", cancelReservation); //✅
 
