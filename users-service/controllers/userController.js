@@ -24,6 +24,7 @@ export const getCurrentUser = async (req, res) => {
     if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
 
     res.json({
+      id: user.id,
       name: user.name,
       email: user.email,
       measurements: user.Measurements || [],

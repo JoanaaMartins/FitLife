@@ -1,9 +1,10 @@
 import axios from "axios";
 
 export const authProtect = async (req, res, next) => {
+
   try {
     const token = req.headers.authorization?.replace("Bearer ", "");
-    console.log('Token recebido pelo middleware:', token);
+    console.log("Token recebido pelo middleware:", token);
 
     if (!token) {
       return res.status(401).json({ error: "Token required" });
@@ -15,9 +16,12 @@ export const authProtect = async (req, res, next) => {
       },
       timeout: 5000,
     });
- console.log('Resposta do user-service:', response.data);
+
+
     req.user = response.data;
+
     next();
+
   } catch (error) {
     console.error("Auth middleware error:", error.message);
 

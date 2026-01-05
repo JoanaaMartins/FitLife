@@ -14,12 +14,12 @@ const router = express.Router();
 
 // rotas públicas
 router.post("/", hashPassword, createUser); //✅
+router.get("/", getAllUsers); //apenas tem acesso os instrutores
 
 
 // rotas protegidas
 router.use(authProtect);
 
-router.get("/", getAllUsers); //apenas tem acesso os instrutores
 
 router.get("/me", getCurrentUser); //apenas tem acesso o proprio user
 

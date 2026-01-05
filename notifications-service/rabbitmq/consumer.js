@@ -1,36 +1,54 @@
-import amqp from 'amqplib';
+import amqp from "amqplib";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const RABBITMQ_URL = process.env.RABBITMQ_URL;
+const RETRY_DELAY = 5000;
 
 export const startConsumer = async () => {
-  const connection = await amqp.connect(process.env.RABBITMQ_URL);
-  const channel = await connection.createChannel();
+  while (true) {
+    try {
+      console.log("Connecting to RabbitMQ...");
 
-  await channel.assertExchange('reservations.events', 'topic', {
-    durable: true,
-  });
+      const connection = await amqp.connect(RABBITMQ_URL);
+      const channel = await connection.createChannel();
 
-  const q = await channel.assertQueue('notifications.queue', {
-    durable: true,
-  });
+      await channel.assertExchange("reservations.events", "topic", {
+        durable: true,
+      });
 
-  await channel.bindQueue(q.queue, 'reservations.events', 'reservation.*');
+      const q = await channel.assertQueue("notifications.queue", {
+        durable: true,
+      });
 
-  console.log('Waiting for reservation events...');
+      await channel.bindQueue(q.queue, "reservations.events", "reservation.*");
 
-  channel.consume(q.queue, async (msg) => {
-    if (!msg) return;
+      console.log("Waiting for reservation events...");
 
-    const event = JSON.parse(msg.content.toString());
+      channel.consume(q.queue, (msg) => {
+        if (!msg) return;
 
-    switch (event.event) {
-      case 'reservation.confirmed':
-        console.log('Enviar notificação de confirmação', event.data);
-        break;
+        const event = JSON.parse(msg.content.toString());
 
-      case 'reservation.cancelled':
-        console.log('Enviar notificação de cancelamento', event.data);
-        break;
+        switch (event.event) {
+          case "reservation.confirmed":
+            console.log("Enviar notificação de confirmação", event.data);
+            break;
+
+          case "reservation.cancelled":
+            console.log("Enviar notificação de cancelamento", event.data);
+            break;
+        }
+
+        channel.ack(msg);
+      });
+
+      break;
+
+    } catch (error) {
+      console.error("RabbitMQ indisponível, a tentar novamente em 5s...");
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY));
     }
-
-    channel.ack(msg);
-  });
+  }
 };
