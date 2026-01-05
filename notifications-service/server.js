@@ -5,12 +5,12 @@ dotenv.config();
 
 const startNotificationsService = async () => {
   try {
-    console.log("🚀 Starting notifications-service...");
+    console.log("Starting notifications-service...");
 
     await startConsumer();
 
   } catch (error) {
-    console.error("❌ Failed to start notifications-service:", error);
+    console.error("Failed to start notifications-service:", error);
     process.exit(1);
   }
 };

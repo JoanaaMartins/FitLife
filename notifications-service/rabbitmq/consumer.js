@@ -14,7 +14,7 @@ export const startConsumer = async () => {
 
   await channel.bindQueue(q.queue, 'reservations.events', 'reservation.*');
 
-  console.log('📩 Waiting for reservation events...');
+  console.log('Waiting for reservation events...');
 
   channel.consume(q.queue, async (msg) => {
     if (!msg) return;
@@ -23,11 +23,11 @@ export const startConsumer = async () => {
 
     switch (event.event) {
       case 'reservation.confirmed':
-        console.log('📧 Enviar notificação de confirmação', event.data);
+        console.log('Enviar notificação de confirmação', event.data);
         break;
 
       case 'reservation.cancelled':
-        console.log('📧 Enviar notificação de cancelamento', event.data);
+        console.log('Enviar notificação de cancelamento', event.data);
         break;
     }
 
