@@ -1,6 +1,15 @@
-version: "3.8"
-
 services:
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: sessions_db
+      MYSQL_USER: mperfeito.08
+      MYSQL_PASSWORD: Mperfeito_08
+    networks:
+      - micro-net
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -14,20 +23,18 @@ services:
       - micro-net
 
   sessions-service:
-  
-    image: sessions-service:latest
+    build: ./sessions-service
     container_name: sessions-service
     env_file:
       - ./sessions-service/.env
-    ports:
-      - "3003:3003"
     depends_on:
+      - mysql
       - rabbitmq
     networks:
       - micro-net
 
   notifications-service:
-    image: notifications-service:latest
+    build: ./notifications-service
     container_name: notifications-service
     env_file:
       - ./notifications-service/.env

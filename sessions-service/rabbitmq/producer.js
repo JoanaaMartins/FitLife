@@ -10,7 +10,7 @@ export const connectRabbitMQ = async () => {
     durable: true,
   });
 
-  console.log('✅ RabbitMQ connected (sessions-service)');
+  console.log('RabbitMQ connected (sessions-service)');
 };
 
 export const publishEvent = (routingKey, payload) => {

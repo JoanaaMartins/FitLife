@@ -8,8 +8,8 @@ import { connectRabbitMQ } from "./rabbitmq/producer.js";
 dotenv.config();
 
 const app = express();
-const port = process.env.DB_PORT;
-const host = process.env.DB_HOST;
+const port = process.env.APP_PORT || 3003;
+const host = process.env.APP_HOS || '0.0.0.0';
 
 app.use(express.json());
 
@@ -92,7 +92,7 @@ const startServer = async () => {
     });
 
   } catch (error) {
-    console.error("❌ Failed to start server:", error);
+    console.error("Failed to start server:", error);
     process.exit(1);
   }
 };
