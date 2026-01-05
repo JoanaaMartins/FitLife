@@ -24,7 +24,4 @@ router.patch("/:id", authProtect, cancelReservation);
 router.put("/:id", authProtect, updateReservation);
 router.delete("/:id", authProtect, deleteReservation);
 
-
-
-
 export default router;

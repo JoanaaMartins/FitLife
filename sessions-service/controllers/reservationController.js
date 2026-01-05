@@ -150,7 +150,7 @@ export const cancelReservation = async (req, res) => {
     await reservation.update({ status: "cancelled" });
 
     await publishEvent("reservation.cancelled", {
-      reservationId: reservation.id,
+     reservationId: reservation.id,
       userId: reservation.user_id,
       classId: reservation.class_id,
       status: "cancelled",
