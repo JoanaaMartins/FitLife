@@ -21,7 +21,9 @@ exports.createExercise = async (req, res) => {
       kcal
     });
     const savedExercise = await newExercise.save();
-    res.status(201).json(savedExercise);
+
+    const result = await Exercise.findById(savedExercise._id).select('-__v');
+    res.status(201).json(result);
   }
   catch (err) {
     res.status(500).json({ error: err.message });
@@ -40,6 +42,23 @@ exports.getExerciseById = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+};
+
+// Update exercise by ID
+exports.updateExerciseById = async (req, res) => {
+  try {
+    const updatedExercise = await Exercise.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedExercise) {
+      return res.status(404).json({ error: 'Exercise not found' });
+    }
+    res.json(updatedExercise);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  } 
 };
 
 // Delete exercise by ID

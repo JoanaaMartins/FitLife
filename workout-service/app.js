@@ -4,10 +4,10 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const connectDB = require('./config/database');
-const exercisesRoutes = require('./routes/exercisesRoutes');
-const workoutPlanRoutes = require('./routes/workoutPlanRoutes');
-const userWorkoutRoutes = require('./routes/userWorkoutRoutes');
+const connectDB = require('./src/config/database');
+const exercisesRoutes = require('./src/routes/exercisesRoutes');
+const workoutPlanRoutes = require('./src/routes/workoutPlanRoutes');
+const workoutSessionRoutes = require('./src/routes/workoutSessionRoutes');
 
 const app = express();
 
@@ -20,9 +20,9 @@ connectDB();
 // Routes
 app.use('/', exercisesRoutes);
 app.use('/', workoutPlanRoutes);
-app.use('/', userWorkoutRoutes);
+app.use('/', workoutSessionRoutes);
 
 
 // Start the server
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => console.log(`Workouts service running on port ${PORT}`));

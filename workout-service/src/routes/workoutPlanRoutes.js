@@ -1,16 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const workoutPlanController = require('../controllers/workoutPlanController');
+const { authProtect } = require('../middlewares/authMiddleware');
 
-// get all exercises
-router.get('/users/:user_id/workout-plans', workoutPlanController.getAllWorkoutPlans); // Get /users/:user_id/workout-plans
+// get all workout plans
+router.get('/workoutPlans', authProtect, workoutPlanController.getAllWorkoutPlans); // Get /workoutPlans
+
 // create a new workout plan
-router.post('/users/:user_id/workout-plans', workoutPlanController.createWorkoutPlan); // Post /users/:user_id/workout-plans
+router.post('/workoutPlans', authProtect, workoutPlanController.createWorkoutPlan); // Post /workoutPlans
+
 // get workout plan by ID
-router.get('/users/:user_id/workout-plans/:id', workoutPlanController.getWorkoutPlanById); // Get /users/:user_id/workout-plans/:id
+router.get('/workoutPlans/:id', authProtect, workoutPlanController.getWorkoutPlanById); // Get /workoutPlans/:id
+
 // update workout plan by ID
-router.put('/users/:user_id/workout-plans/:id', workoutPlanController.updateWorkoutPlanById); // Put /users/:user_id/workout-plans/:id
+router.put('/workoutPlans/:id', authProtect, workoutPlanController.updateWorkoutPlanById); // Put /workoutPlans/:id
+
 // delete workout plan by ID
-router.delete('/users/:user_id/workout-plans/:id', workoutPlanController.deleteWorkoutPlanById); // Delete /users/:user_id/workout-plans/:id
+router.delete('/workoutPlans/:id', authProtect, workoutPlanController.deleteWorkoutPlanById); // Delete /workoutPlans/:id
+
+// delete all workout plans for a specific user
+router.delete('/workoutPlans', authProtect, workoutPlanController.deleteUserWorkoutPlans); // Delete /workoutPlans
 
 module.exports = router;

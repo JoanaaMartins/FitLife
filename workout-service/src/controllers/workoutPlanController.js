@@ -1,22 +1,32 @@
 const WorkoutPlan = require('../models/workoutPlan');
 
-// Get all workout plans
+// Get all workout plans and filter by sessions_per_week and duration_min
 exports.getAllWorkoutPlans = async (req, res) => {
     try {
-        const { user_id } = req.params;
-        const workoutPlans = await WorkoutPlan.find({ user_id: user_id }).populate('exercises').select('-__v');
-                    
-        res.json(workoutPlans);
+        const user_id = req.user.id.toString(); // Get user_id from authenticated user
+        const { sessions_per_week, duration_min } = req.query;  // Get filters from query parameters
+        let filter = { user_id };
+        
+        // Apply filters if provided
+        if (sessions_per_week) {
+            filter.sessions_per_week = Number(sessions_per_week);
+        }
+        if (duration_min) {
+            filter.duration_min =  Number(duration_min); // equal to the specified duration_min
+        }        
+
+        const workoutPlans = await WorkoutPlan.find(filter).populate('exercises').select('-__v');
+        res.json(workoutPlans); // Send the filtered workout plans as response
     } catch (err) {
         res.status(500).json({ error: err.message });
-    }
+    }   
 };
 
 // Create a new workout plan
 exports.createWorkoutPlan = async (req, res) => {
     try {
-        const { user_id } = req.params;
-        const { name, goal_type, difficulty, duration_min, exercises } = req.body;
+        const user_id = req.user.id.toString(); // Get user_id from authenticated user
+        const { name, goal_type, difficulty, duration_min, sessions_per_week, exercises } = req.body;
 
         // Create a new workout plan
         const newWorkoutPlan = new WorkoutPlan({
@@ -25,6 +35,7 @@ exports.createWorkoutPlan = async (req, res) => {
             goal_type,
             difficulty,
             duration_min,
+            sessions_per_week,
             exercises
         });
 
@@ -43,7 +54,7 @@ exports.createWorkoutPlan = async (req, res) => {
 // Get workout plan by ID
 exports.getWorkoutPlanById = async (req, res) => {
     try {
-        const workoutPlan = await WorkoutPlan.findById(req.params.id).populate('exercises').select('-__v');
+        const workoutPlan = await WorkoutPlan.findOne({ _id: req.params.id, user_id: req.user.id }).populate('exercises').select('-__v');
         if (!workoutPlan) {
             return res.status(404).json({ error: 'Workout plan not found' });
         }
@@ -56,12 +67,13 @@ exports.getWorkoutPlanById = async (req, res) => {
 // Update workout plan by ID
 exports.updateWorkoutPlanById = async (req, res) => {
     try {
-        const { name, goal_type, difficulty, duration_min, exercises } = req.body;
-        const updatedWorkoutPlan = await WorkoutPlan.findByIdAndUpdate(
-            req.params.id,
-            { name, goal_type, difficulty, duration_min, exercises },
+        const { name, goal_type, difficulty, duration_min, sessions_per_week, exercises } = req.body;
+        const updatedWorkoutPlan = await WorkoutPlan.findOneAndUpdate(
+            { _id: req.params.id, user_id: req.user.id }, // Ensure only the owner can update
+            { name, goal_type, difficulty, duration_min, sessions_per_week, exercises },
             { new: true }
         ).populate('exercises').select('-__v');
+
         if (!updatedWorkoutPlan) {
             return res.status(404).json({ error: 'Workout plan not found' });
         }
@@ -74,7 +86,7 @@ exports.updateWorkoutPlanById = async (req, res) => {
 // Delete workout plan by ID
 exports.deleteWorkoutPlanById = async (req, res) => {
     try {
-        const deletedWorkoutPlan = await WorkoutPlan.findByIdAndDelete(req.params.id);
+        const deletedWorkoutPlan = await WorkoutPlan.findOneAndDelete({ _id: req.params.id, user_id: req.user.id }); // Only owner can delete
         if (!deletedWorkoutPlan) {
             return res.status(404).json({ error: 'Workout plan not found' });
         }
@@ -82,4 +94,15 @@ exports.deleteWorkoutPlanById = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+};
+
+// Delete all workout plans for the authenticated user
+exports.deleteUserWorkoutPlans = async (req, res) => {
+    try {
+        const user_id = req.user.id.toString(); // Use authenticated user
+        const result = await WorkoutPlan.deleteMany({ user_id });
+        res.json({ message: `${result.deletedCount} workout plans deleted successfully` });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }   
 };
