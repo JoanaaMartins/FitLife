@@ -3,6 +3,12 @@ import { publishEvent } from "../rabbitmq/producer.js";
 
 // GET all reservations (public)
 export const getAllReservations = async (req, res) => {
+  /*  
+    #swagger.tags = ['Reservations'] 
+    #swagger.responses[200] = { description: 'Reservations found successfully', schema: {
+    $ref: '#/definitions/GetReservation'} } 
+    #swagger.responses[404] = { description: 'Reservations not found' }
+  */
   try {
     const reservations = await db.Reservation.findAll({
       include: [
@@ -21,6 +27,12 @@ export const getAllReservations = async (req, res) => {
 
 // GET reservation by ID (public)
 export const getReservationById = async (req, res) => {
+  /*  
+    #swagger.tags = ['Reservations']
+    #swagger.responses[200] = { description: 'Reservation found successfully', schema: {
+    $ref: '#/definitions/GetReservation'} } 
+    #swagger.responses[404] = { description: 'Reservation not found' }
+  */
   try {
     const reservation = await db.Reservation.findByPk(req.params.id, {
       include: [
@@ -41,6 +53,16 @@ export const getReservationById = async (req, res) => {
 
 // CREATE reservation (protected)
 export const createReservation = async (req, res) => {
+  /*
+    #swagger.tags = ['Reservations']
+    #swagger.parameters['body'] = { in: 'body', description: 'New reservation object', required: true,
+    schema: { $ref: '#/definitions/CreateReservation' }
+    }
+    #swagger.responses[201] = { description: 'Reservation created successfully', schema: {
+    $ref: '#/definitions/GetReservation'} }
+    #swagger.responses[400] = { description: 'Bad Request' }
+    #swagger.responses[404] = { description: 'Class not found' }
+  */
   try {
     const { class_id } = req.body;
 
@@ -86,6 +108,15 @@ export const createReservation = async (req, res) => {
 
 // UPDATE reservation (public)
 export const updateReservation = async (req, res) => {
+  /*  
+    #swagger.tags = ['Reservations']
+    #swagger.parameters['body'] = { in: 'body', description: 'Update a Reservation',
+    required: true, schema: { $ref: '#/definitions/CreateReservation' }
+    }
+    #swagger.responses[200] = { description: 'Reservation updated successfully', schema: {
+    $ref: '#/definitions/GetReservation'} }
+    #swagger.responses[404] = { description: 'Reservation not found' }
+  */
   try {
     const reservation = await db.Reservation.findByPk(req.params.id);
     if (!reservation)
@@ -101,6 +132,11 @@ export const updateReservation = async (req, res) => {
 
 // DELETE reservation (public)
 export const deleteReservation = async (req, res) => {
+  /*  
+    #swagger.tags = ['Reservations']
+    #swagger.responses[200] = { description: 'Reservation deleted successfully' }
+    #swagger.responses[404] = { description: 'Reservation not found' }
+  */
   try {
     const reservation = await db.Reservation.findByPk(req.params.id);
     if (!reservation)
@@ -116,6 +152,11 @@ export const deleteReservation = async (req, res) => {
 
 // GET reservations of logged-in user (protected)
 export const getUserReservations = async (req, res) => {
+  /*  
+    #swagger.tags = ['Reservations']
+    #swagger.responses[200] = { description: 'User reservations retrieved successfully', schema: {
+    $ref: '#/definitions/GetReservation'} }
+  */
   try {
     const reservations = await db.Reservation.findAll({
       where: { user_id: req.user.id },
@@ -136,6 +177,12 @@ export const getUserReservations = async (req, res) => {
 
 // CANCEL reservation (protected)
 export const cancelReservation = async (req, res) => {
+  /*  
+    #swagger.tags = ['Reservations']
+    #swagger.responses[200] = { description: 'Reservation cancelled successfully', schema: {
+    $ref: '#/definitions/GetReservation'} }
+    #swagger.responses[404] = { description: 'Reservation not found or does not belong to user' }
+  */
   try {
     const reservation = await db.Reservation.findOne({
       where: { id: req.params.id, user_id: req.user.id },

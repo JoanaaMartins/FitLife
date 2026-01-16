@@ -3,6 +3,12 @@ import db from "../models/db.js";
 
 
 export const getCurrentUser = async (req, res) => {
+  /*  
+  #swagger.tags = ['Users'] 
+  #swagger.responses[200] = { description: 'Current user retrieved successfully', schema: {
+  $ref: '#/definitions/GetUser'} } 
+  #swagger.responses[404] = { description: 'User not found' }
+  */
   try {
     const userId = req.user.id;
 
@@ -36,6 +42,18 @@ export const getCurrentUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
+  /*  
+  #swagger.tags = ['Users'] 
+  #swagger.parameters['body'] = {
+  in: 'body',
+  description: 'User login credentials',
+  required: true,
+  schema: { $ref: '#/definitions/LoginUser' }
+  }
+  #swagger.responses[200] = { description: 'User logged in successfully', schema: {
+  $ref: '#/definitions/GetUser'} }
+  #swagger.responses[401] = { description: 'Invalid credentials' }
+  */
   try {
     const { email, password } = req.body;
     const user = await validateUser(email, password);
@@ -51,6 +69,18 @@ export const loginUser = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
+  /*  
+  #swagger.tags = ['Users'] 
+  #swagger.parameters['body'] = { 
+  in: 'body', 
+  description: 'New user object', 
+  required: true, 
+  schema: { $ref: '#/definitions/CreateUser' } 
+  } 
+  #swagger.responses[201] = { description: 'User created successfully', schema: { 
+  $ref: '#/definitions/GetUser'} } 
+  #swagger.responses[409] = { description: 'Email already exists' } 
+  */ 
   try {
     const { name, email, password, gender, birth_date, role } = req.body;
     const user = await db.User.create({
@@ -71,6 +101,16 @@ export const createUser = async (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
+  /*  
+  #swagger.tags = ['Users'] 
+  #swagger.responses[200] = { 
+    description: 'Users retrieved successfully', 
+    schema: { 
+      type: "array", 
+      items: { $ref: "#/definitions/GetUser" } 
+    } 
+  }
+  */
   try {
   
     const users = await db.User.findAll();
@@ -82,6 +122,13 @@ export const getAllUsers = async (req, res) => {
 
 // Rota para instrutores verem medidas e metas de um aluno pelo ID
 export const getUserDetails = async (req, res) => {
+  /*  
+  #swagger.tags = ['Users'] 
+  #swagger.responses[200] = { description: 'Student details retrieved successfully', schema: {
+  $ref: '#/definitions/GetUser'} } 
+  #swagger.responses[403] = { description: 'Access denied' } 
+  #swagger.responses[404] = { description: 'Student not found' } 
+  */
   try {
     // Só instrutores podem acessar
     if (req.user.role !== "instructor") {
@@ -126,6 +173,18 @@ export const getUserDetails = async (req, res) => {
 
 
 export const updateUser = async (req, res) => {
+  /*  
+  #swagger.tags = ['Users'] 
+  #swagger.parameters['body'] = {
+  in: 'body',
+  description: 'Update a User',
+  required: true,
+  schema: { $ref: '#/definitions/CreateUser' }
+  }
+  #swagger.responses[200] = { description: 'User updated successfully', schema: {
+  $ref: '#/definitions/GetUser'} }
+  #swagger.responses[404] = { description: 'User not found' }
+  */
   try {
     const user = await db.User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -142,6 +201,11 @@ export const updateUser = async (req, res) => {
 };
 
 export const deleteUser = async (req, res) => {
+  /*  
+  #swagger.tags = ['Users'] 
+  #swagger.responses[200] = { description: 'User deleted successfully' } 
+  #swagger.responses[404] = { description: 'User not found' } 
+  */
   try {
     const user = await db.User.findByPk(req.params.id);
     if (!user) return res.status(404).json({ error: "User not found" });

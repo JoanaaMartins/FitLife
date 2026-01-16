@@ -1,6 +1,18 @@
 import db from "../models/db.js";
 
 export const createGoal = async (req, res) => {
+  /*  
+  #swagger.tags = ['Goals'] 
+  #swagger.parameters['body'] = {
+  in: 'body',
+  description: 'New goal object',
+  required: true,
+  schema: { $ref: '#/definitions/CreateGoal' }
+  }
+  #swagger.responses[201] = { description: 'Goal created successfully', schema: {
+  $ref: '#/definitions/GetGoal'} }  
+  #swagger.responses[400] = { description: 'Bad Request' }
+  */
   try {
     const { type, target_value, unit, target_date, status } = req.body;
 
@@ -20,6 +32,19 @@ export const createGoal = async (req, res) => {
 };
 
 export const getAllGoals = async (req, res) => {
+  /*  
+  #swagger.tags = ['Goals'] 
+  #swagger.responses[200] = { 
+    description: 'Goals found successfully', 
+    schema: { 
+      type: "array", 
+      items: { $ref: "#/definitions/GetGoal" } 
+    } 
+  } 
+  #swagger.responses[404] = { 
+    description: 'Goals not found' 
+  } 
+  */
   try {
     const goals = await db.Goal.findAll({
       where: { user_id: req.user.id },
@@ -32,6 +57,12 @@ export const getAllGoals = async (req, res) => {
 };
 
 export const getGoalById = async (req, res) => {
+  /*  
+  #swagger.tags = ['Goals'] 
+  #swagger.responses[200] = { description: 'Goal found successfully', schema: {
+  $ref: '#/definitions/GetGoal'} }
+  #swagger.responses[404] = { description: 'Goal not found' }
+  */
   try {
     const goal = await db.Goal.findOne({
       where: { id: req.params.id, user_id: req.user.id },
@@ -46,6 +77,18 @@ export const getGoalById = async (req, res) => {
 };
 
 export const updateGoal = async (req, res) => {
+  /*  
+  #swagger.tags = ['Goals'] 
+  #swagger.parameters['body'] = { 
+  in: 'body', 
+  description: 'Update a Goal',
+  required: true,
+  schema: { $ref: '#/definitions/CreateGoal' } 
+  }
+  #swagger.responses[200] = { description: 'Goal updated successfully', schema: { 
+  $ref: '#/definitions/GetGoal'} }
+  #swagger.responses[404] = { description: 'Goal not found' }
+  */
   try {
     const goal = await db.Goal.findOne({
       where: { id: req.params.id, user_id: req.user.id },
@@ -61,6 +104,11 @@ export const updateGoal = async (req, res) => {
 };
 
 export const deleteGoal = async (req, res) => {
+  /*  
+  #swagger.tags = ['Goals'] 
+  #swagger.responses[200] = { description: 'Goal deleted successfully' } 
+  #swagger.responses[404] = { description: 'Goal not found' } 
+  */
   try {
     const goal = await db.Goal.findOne({
       where: { id: req.params.id, user_id: req.user.id },

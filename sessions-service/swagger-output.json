@@ -1,0 +1,780 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Sessions Service API",
+    "description": "Swagger documentation for Sessions microservice",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3002",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Classes",
+      "description": "Classes related endpoints"
+    },
+    {
+      "name": "Instructors",
+      "description": "Instructors related endpoints"
+    },
+    {
+      "name": "Reservation",
+      "description": "Reservation related endpoints"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/classes/": {
+      "get": {
+        "tags": [
+          "Classes"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Classes found successfully",
+            "schema": {
+              "$ref": "#/definitions/GetClass"
+            }
+          },
+          "404": {
+            "description": "Classes not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Classes"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "New class object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateClass"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Class created successfully",
+            "schema": {
+              "$ref": "#/definitions/GetClass"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/classes/available": {
+      "get": {
+        "tags": [
+          "Classes"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Available classes retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/GetClass"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/classes/{id}": {
+      "get": {
+        "tags": [
+          "Classes"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Class found successfully",
+            "schema": {
+              "$ref": "#/definitions/GetClass"
+            }
+          },
+          "404": {
+            "description": "Class not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Classes"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Update a Class",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateClass"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Class updated successfully",
+            "schema": {
+              "$ref": "#/definitions/GetClass"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Class not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Classes"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "Class deleted successfully"
+          },
+          "404": {
+            "description": "Class not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/classes/{id}/reservations": {
+      "get": {
+        "tags": [
+          "Classes"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Class reservations retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/GetReservation"
+            }
+          },
+          "404": {
+            "description": "Class not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/instructors/": {
+      "get": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Instructors found successfully",
+            "schema": {
+              "$ref": "#/definitions/GetInstructor"
+            }
+          },
+          "404": {
+            "description": "Instructors not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "New instructor object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateInstructor"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Instructor created successfully",
+            "schema": {
+              "$ref": "#/definitions/GetInstructor"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/instructors/{id}": {
+      "get": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instructor found successfully",
+            "schema": {
+              "$ref": "#/definitions/GetInstructor"
+            }
+          },
+          "404": {
+            "description": "Instructor not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Update a Instructor",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateInstructor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instructor updated successfully",
+            "schema": {
+              "$ref": "#/definitions/GetInstructor"
+            }
+          },
+          "404": {
+            "description": "Instructor not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instructor deleted successfully"
+          },
+          "404": {
+            "description": "Instructor not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/instructors/{id}/classes": {
+      "get": {
+        "tags": [
+          "Instructors"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instructor classes retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/GetClass"
+            }
+          },
+          "404": {
+            "description": "Instructor not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/reservations/": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Reservations found successfully",
+            "schema": {
+              "$ref": "#/definitions/GetReservation"
+            }
+          },
+          "404": {
+            "description": "Reservations not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Reservations"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "New reservation object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateReservation"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Reservation created successfully",
+            "schema": {
+              "$ref": "#/definitions/GetReservation"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Class not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/reservations/{id}": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation found successfully",
+            "schema": {
+              "$ref": "#/definitions/GetReservation"
+            }
+          },
+          "404": {
+            "description": "Reservation not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Reservations"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation cancelled successfully",
+            "schema": {
+              "$ref": "#/definitions/GetReservation"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Reservation not found or does not belong to user"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Reservations"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Update a Reservation",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateReservation"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation updated successfully",
+            "schema": {
+              "$ref": "#/definitions/GetReservation"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Reservation not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Reservations"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Reservation not found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
+    "/reservations/me": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User reservations retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/GetReservation"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "503": {
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetClass": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "67a1b2c3d4e5f6a7b8c9d0e1"
+        },
+        "user_id": {
+          "type": "string",
+          "example": "123"
+        },
+        "workout_id": {
+          "type": "string",
+          "example": "456"
+        },
+        "date": {
+          "type": "string",
+          "example": "2025-01-10"
+        },
+        "duration": {
+          "type": "number",
+          "example": 60
+        },
+        "notes": {
+          "type": "string",
+          "example": "Example session notes"
+        }
+      }
+    },
+    "CreateClass": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "123"
+        },
+        "workout_id": {
+          "type": "string",
+          "example": "456"
+        },
+        "date": {
+          "type": "string",
+          "example": "2025-01-10"
+        },
+        "duration": {
+          "type": "number",
+          "example": 60
+        },
+        "notes": {
+          "type": "string",
+          "example": "Example session notes"
+        }
+      }
+    },
+    "GetInstructor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "specialty": {
+          "type": "string",
+          "example": "Yoga"
+        }
+      }
+    },
+    "CreateInstructor": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "John Doe"
+        },
+        "specialty": {
+          "type": "string",
+          "example": "Yoga"
+        }
+      }
+    },
+    "GetReservation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "89a1b2c3d4e5f6a7b8c9d0e2"
+        },
+        "class_id": {
+          "type": "string",
+          "example": "67a1b2c3d4e5f6a7b8c9d0e1"
+        },
+        "user_id": {
+          "type": "string",
+          "example": "123"
+        },
+        "reservation_date": {
+          "type": "string",
+          "example": "2025-02-15"
+        }
+      }
+    },
+    "CreateReservation": {
+      "type": "object",
+      "properties": {
+        "class_id": {
+          "type": "string",
+          "example": "67a1b2c3d4e5f6a7b8c9d0e1"
+        },
+        "user_id": {
+          "type": "string",
+          "example": "123"
+        },
+        "reservation_date": {
+          "type": "string",
+          "example": "2025-02-15"
+        }
+      }
+    }
+  }
+}

@@ -13,6 +13,14 @@ const host = process.env.DB_HOST;
 
 app.use(express.json());
 
+// Swagger setup
+import * as swaggerUi from "swagger-ui-express";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const swaggerFile = require("./swagger-output.json");
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile)); 
+
 app.use((req, res, next) => {
   const start = Date.now();
   res.on("finish", () => {

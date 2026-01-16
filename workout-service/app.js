@@ -22,7 +22,12 @@ app.use('/', exercisesRoutes);
 app.use('/', workoutPlanRoutes);
 app.use('/', workoutSessionRoutes);
 
+// Swagger setup
+const swaggerUi = require("swagger-ui-express"); 
+const swaggerFile = require("./swagger-output.json"); 
+ 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile)); 
 
 // Start the server
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 3004;
 app.listen(PORT, () => console.log(`Workouts service running on port ${PORT}`));

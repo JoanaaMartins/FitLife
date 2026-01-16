@@ -3,6 +3,16 @@ const WorkoutPlan = require('../models/workoutPlan');
 
 // Get all workouts (history) for the authenticated user
 exports.getAllUserWorkouts = async (req, res) => {
+    /*  
+    #swagger.tags = ['Workout Sessions'] 
+    #swagger.responses[200] = { 
+        description: 'User workout sessions retrieved successfully',
+        schema: {
+        type: "array",
+        items: { $ref: "#/definitions/GetWorkoutSession" }
+        }
+    }
+    */
     try {
         const user_id = req.user.id.toString(); // Get user_id from authenticated user
 
@@ -27,6 +37,18 @@ exports.getAllUserWorkouts = async (req, res) => {
 
 // Create Workout for the authenticated user
 exports.createWorkoutSession = async (req, res) => {
+    /*  
+    #swagger.tags = ['Workout Sessions'] 
+    #swagger.parameters['body'] = {
+    in: 'body',
+    description: 'New workout session object',
+    required: true,
+    schema: { $ref: '#/definitions/CreateWorkoutSession' }
+    }
+    #swagger.responses[201] = { description: 'Workout Session created successfully', schema: {
+    $ref: '#/definitions/GetWorkoutSession'} }
+    #swagger.responses[404] = { description: 'Workout plan not found' }
+    */
     try {
         const user_id = req.user.id.toString(); // Get user_id from authenticated user
         const { workout_plan_id, date, duration } = req.body;
@@ -67,6 +89,13 @@ exports.createWorkoutSession = async (req, res) => {
 
 // Get WorkoutSession by ID (only if it belongs to the user)
 exports.getWorkoutSessionById = async (req, res) => {
+    /*  
+    #swagger.tags = ['Workout Sessions'] 
+    #swagger.responses[200] = { 
+        description: 'Workout session deleted successfully' 
+    } 
+    #swagger.responses[404] = { description: 'Workout session not found' } 
+    */ 
     try {
         const workoutSession = await WorkoutSession.findOne({
             _id: req.params.id,
@@ -85,6 +114,11 @@ exports.getWorkoutSessionById = async (req, res) => {
 
 // Delete WorkoutSession by ID (only if it belongs to the user)
 exports.deleteWorkoutSessionById = async (req, res) => {
+    /*  
+    #swagger.tags = ['Workout Sessions'] 
+    #swagger.responses[200] = { description: 'Workout session deleted successfully' } 
+    #swagger.responses[404] = { description: 'Workout session not found' } 
+    */
     try {
         const workoutSession = await WorkoutSession.findOneAndDelete({
             _id: req.params.id,
@@ -103,6 +137,11 @@ exports.deleteWorkoutSessionById = async (req, res) => {
 
 // Delete all WorkoutSessions for the authenticated user
 exports.deleteUserWorkout = async (req, res) => {
+    /*  
+    #swagger.tags = ['Workout Sessions'] 
+    #swagger.responses[200] = { description: 'All workout sessions deleted successfully' } 
+    #swagger.responses[500] = { description: 'Internal server error' }
+    */
     try {
         const user_id = req.user.id.toString(); // Get user_id from authenticated user
         const result = await WorkoutSession.deleteMany({ user_id });

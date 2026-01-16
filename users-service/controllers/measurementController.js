@@ -1,6 +1,18 @@
 import db from "../models/db.js";
 
 export const createMeasurement = async (req, res) => {
+  /*  
+  #swagger.tags = ['Measurements'] 
+  #swagger.parameters['body'] = {
+  in: 'body',
+  description: 'New measurement object',
+  required: true,
+  schema: { $ref: '#/definitions/CreateMeasurement' }
+  }
+  #swagger.responses[201] = { description: 'Measurement created successfully', schema: {
+  $ref: '#/definitions/GetMeasurement'} }  
+  #swagger.responses[400] = { description: 'Bad Request' }
+  */
   try {
     const { date, weight_kg, height_cm, body_fat_pct } = req.body;
 
@@ -19,6 +31,17 @@ export const createMeasurement = async (req, res) => {
 };
 
 export const getAllMeasurements = async (req, res) => {
+  /*  
+  #swagger.tags = ['Measurements'] 
+  #swagger.responses[200] = { 
+    description: 'Measurements found successfully', 
+    schema: {
+      type: "array",
+      items: { $ref: '#/definitions/GetMeasurement' }
+    }
+  } 
+  #swagger.responses[404] = { description: 'Measurements not found' }
+  */
   try {
     const measurements = await db.Measurement.findAll({
       where: { user_id: req.user.id },
@@ -31,6 +54,12 @@ export const getAllMeasurements = async (req, res) => {
 };
 
 export const getMeasurementById = async (req, res) => {
+  /*
+  #swagger.tags = ['Measurements'] 
+  #swagger.responses[200] = { description: 'Measurement found successfully', schema: {
+  $ref: '#/definitions/GetMeasurement'} } 
+  #swagger.responses[404] = { description: 'Measurement not found' }
+  */
   try {
     const measurement = await db.Measurement.findOne({
       where: { id: req.params.id, user_id: req.user.id },
@@ -46,6 +75,18 @@ export const getMeasurementById = async (req, res) => {
 };
 
 export const updateMeasurement = async (req, res) => {
+  /*  
+  #swagger.tags = ['Measurements'] 
+  #swagger.parameters['body'] = {
+  in: 'body',
+  description: 'Update a Measurement',
+  required: true,
+  schema: { $ref: '#/definitions/CreateMeasurement' }
+  }
+  #swagger.responses[200] = { description: 'Measurement updated successfully', schema: {
+  $ref: '#/definitions/GetMeasurement'} }
+  #swagger.responses[404] = { description: 'Measurement not found' }
+  */
   try {
     const measurement = await db.Measurement.findOne({
       where: { id: req.params.id, user_id: req.user.id },
@@ -62,6 +103,11 @@ export const updateMeasurement = async (req, res) => {
 };
 
 export const deleteMeasurement = async (req, res) => {
+  /*  
+  #swagger.tags = ['Measurements'] 
+  #swagger.responses[200] = { description: 'Measurement deleted successfully' } 
+  #swagger.responses[404] = { description: 'Measurement not found' } 
+  */
   try {
     const measurement = await db.Measurement.findOne({
       where: { id: req.params.id, user_id: req.user.id },

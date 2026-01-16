@@ -12,13 +12,17 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "amqplib": "^0.10.9",
+    "axios": "^1.13.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mongoose": "^8.19.3",
-    "mysql2": "^3.15.3"
+    "mysql2": "^3.15.3",
+    "sequelize": "^6.37.7",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
   }
-
 }

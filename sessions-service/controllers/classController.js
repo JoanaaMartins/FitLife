@@ -3,6 +3,12 @@ import { Op } from 'sequelize';
 
 // GET all classes
 export const getAllClasses = async (req, res) => {
+   /*  
+    #swagger.tags = ['Classes'] 
+    #swagger.responses[200] = { description: 'Classes found successfully', schema: { 
+    $ref: '#/definitions/GetClass'} } 
+    #swagger.responses[404] = { description: 'Classes not found' } 
+  */
   try {
     const classes = await db.Class.findAll({
       include: [db.Instructor]
@@ -16,6 +22,14 @@ export const getAllClasses = async (req, res) => {
 
 // GET a class by ID
 export const getClassById = async (req, res) => {
+    /*  
+      #swagger.tags = ['Classes'] 
+      #swagger.responses[200] = { 
+      description: 'Class found successfully', 
+      schema: { $ref: '#/definitions/GetClass'} } 
+      #swagger.responses[404] = { 
+      description: 'Class not found' } 
+    */
   try {
     const classItem = await db.Class.findByPk(req.params.id, {
       include: [db.Instructor]
@@ -30,6 +44,15 @@ export const getClassById = async (req, res) => {
 
 // CREATE a new class
 export const createClass = async (req, res) => {
+  /*  
+    #swagger.tags = ['Classes'] 
+    #swagger.parameters['body'] = { in: 'body', description: 'New class object', required: true,
+    schema: { $ref: '#/definitions/CreateClass' } 
+    }
+    #swagger.responses[201] = { description: 'Class created successfully', schema: {
+    $ref: '#/definitions/GetClass'} }
+    #swagger.responses[400] = { description: 'Bad Request' }
+  */
   try {
     const { title, instructor_id, start_time, end_time, capacity, type } = req.body;
 
@@ -67,6 +90,18 @@ export const createClass = async (req, res) => {
 
 // UPDATE a class
 export const updateClass = async (req, res) => {
+  /*  
+    #swagger.tags = ['Classes'] 
+    #swagger.parameters['body'] = { 
+    in: 'body', 
+    description: 'Update a Class', 
+    required: true, 
+    schema: { $ref: '#/definitions/CreateClass' } 
+    } 
+    #swagger.responses[200] = { description: 'Class updated successfully', schema: { 
+    $ref: '#/definitions/GetClass'} } 
+    #swagger.responses[404] = { description: 'Class not found' } 
+  */
   try {
     const classItem = await db.Class.findByPk(req.params.id);
     if (!classItem) return res.status(404).json({ error: 'Class not found' });
@@ -92,6 +127,11 @@ export const updateClass = async (req, res) => {
 
 // DELETE a class
 export const deleteClass = async (req, res) => {
+  /*  
+    #swagger.tags = ['Classes'] 
+    #swagger.responses[204] = { description: 'Class deleted successfully'} 
+    #swagger.responses[404] = { description: 'Class not found' } 
+  */
   try {
     const classItem = await db.Class.findByPk(req.params.id);
     if (!classItem) return res.status(404).json({ error: 'Class not found' });
@@ -106,6 +146,11 @@ export const deleteClass = async (req, res) => {
 
 // GET available classes
 export const getAvailableClasses = async (req, res) => {
+  /*
+    #swagger.tags = ['Classes']
+    #swagger.responses[200] = { description: 'Available classes retrieved successfully', schema: {
+    $ref: '#/definitions/GetClass'} }
+  */
   try {
     const classes = await db.Class.findAll({
       include: [
@@ -133,6 +178,12 @@ export const getAvailableClasses = async (req, res) => {
 
 // GET reservations for a class
 export const getClassReservations = async (req, res) => {
+  /*
+    #swagger.tags = ['Classes']
+    #swagger.responses[200] = { description: 'Class reservations retrieved successfully', schema: {
+    $ref: '#/definitions/GetReservation'} }
+    #swagger.responses[404] = { description: 'Class not found' }
+  */
   try {
     const classItem = await db.Class.findByPk(req.params.id, {
       include: [{ model: db.Reservation }]

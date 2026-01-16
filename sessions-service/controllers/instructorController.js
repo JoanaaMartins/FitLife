@@ -2,6 +2,12 @@ import db from '../models/db.js';
 
 // GET all instructors
 export const getAllInstructors = async (req, res) => {
+     /*  
+  #swagger.tags = ['Instructors'] 
+  #swagger.responses[200] = { description: 'Instructors found successfully', schema: { 
+  $ref: '#/definitions/GetInstructor'} } 
+  #swagger.responses[404] = { description: 'Instructors not found' } 
+  */
   try {
     const instructors = await db.Instructor.findAll();
     res.json(instructors);
@@ -13,6 +19,14 @@ export const getAllInstructors = async (req, res) => {
 
 // GET instructor by ID
 export const getInstructorById = async (req, res) => {
+  /*
+    #swagger.tags = ['Instructors']
+    #swagger.responses[200] = {
+    description: 'Instructor found successfully',
+    schema: { $ref: '#/definitions/GetInstructor'} }
+    #swagger.responses[404] = {
+    description: 'Instructor not found' }
+  */
   try {
     const instructor = await db.Instructor.findByPk(req.params.id, {
       include: [{
@@ -30,6 +44,15 @@ export const getInstructorById = async (req, res) => {
 
 // CREATE a new instructor
 export const createInstructor = async (req, res) => {
+  /*  
+    #swagger.tags = ['Instructors']
+    #swagger.parameters['body'] = { in: 'body', description: 'New instructor object', required: true,
+    schema: { $ref: '#/definitions/CreateInstructor' }
+    }
+    #swagger.responses[201] = { description: 'Instructor created successfully', schema: {
+    $ref: '#/definitions/GetInstructor'} }
+    #swagger.responses[400] = { description: 'Bad Request' }
+  */
   try {
     const { name, specialty } = req.body;
 
@@ -47,6 +70,18 @@ export const createInstructor = async (req, res) => {
 
 // UPDATE an instructor
 export const updateInstructor = async (req, res) => {
+  /*
+    #swagger.tags = ['Instructors']
+    #swagger.parameters['body'] = { 
+    in: 'body', 
+    description: 'Update a Instructor',
+    required: true, 
+    schema: { $ref: '#/definitions/CreateInstructor' } 
+    }
+    #swagger.responses[200] = { description: 'Instructor updated successfully', schema: { 
+    $ref: '#/definitions/GetInstructor'} }
+    #swagger.responses[404] = { description: 'Instructor not found' }
+  */
   try {
     const instructor = await db.Instructor.findByPk(req.params.id);
     if (!instructor) return res.status(404).json({ error: 'Instructor not found' });
@@ -63,6 +98,11 @@ export const updateInstructor = async (req, res) => {
 
 // DELETE an instructor
 export const deleteInstructor = async (req, res) => {
+  /*
+    #swagger.tags = ['Instructors']
+    #swagger.responses[200] = { description: 'Instructor deleted successfully' }
+    #swagger.responses[404] = { description: 'Instructor not found' }
+  */
   try {
     const instructor = await db.Instructor.findByPk(req.params.id);
     if (!instructor) return res.status(404).json({ error: 'Instructor not found' });
@@ -77,6 +117,12 @@ export const deleteInstructor = async (req, res) => {
 
 // GET all classes of a specific instructor
 export const getInstructorClasses = async (req, res) => {
+  /*
+    #swagger.tags = ['Instructors']
+    #swagger.responses[200] = { description: 'Instructor classes retrieved successfully', schema: {
+    $ref: '#/definitions/GetClass'} }
+    #swagger.responses[404] = { description: 'Instructor not found' }
+  */
   try {
     const instructor = await db.Instructor.findByPk(req.params.id, {
       include: [{
