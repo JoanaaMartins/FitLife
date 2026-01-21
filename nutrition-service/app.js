@@ -41,7 +41,7 @@ const authMiddleware = ({ req }) => {
 
 async function startServer() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/nutritiondb', {
+    await mongoose.connect('mongodb://fitlife_mongodb:27017/nutritiondb', {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });

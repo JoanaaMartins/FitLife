@@ -4,23 +4,23 @@ import userRoutes from "./routes/userRoute.js";
 import goalRoutes from "./routes/goalRoute.js";
 import measurementRoutes from "./routes/measurementRoute.js";
 import { loginUser } from "./controllers/userController.js";
+import db from "./models/db.js"; 
 
 dotenv.config();
 
 const app = express();
-const port = process.env.DB_PORT;
-const host = process.env.DB_HOST;
-const router = express.Router();
+const port = process.env.APP_PORT || 3002; 
+const host = process.env.APP_HOST || "0.0.0.0";
 
 app.use(express.json());
+
+const router = express.Router();
 app.use(router);
 
-// Swagger setup
 import * as swaggerUi from "swagger-ui-express";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const swaggerFile = require("./swagger-output.json");
-
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use((req, res, next) => {
@@ -35,11 +35,8 @@ app.use((req, res, next) => {
 });
 
 router.post("/login", loginUser);
-
 app.use("/users", userRoutes);
-
 app.use("/goals", goalRoutes);
-
 app.use("/measurements", measurementRoutes);
 
 app.use((req, res, next) => {
@@ -51,10 +48,11 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err);
 
-  if (err.type === "entity.parse.failed")
+  if (err.type === "entity.parse.failed") {
     return res.status(400).json({
       error: "Invalid JSON payload! Check if your body data is a valid JSON.",
     });
+  }
 
   if (
     err.name === "SequelizeValidationError" ||
@@ -95,6 +93,18 @@ app.use((err, req, res, next) => {
     .json({ error: err.message || "Internal Server Error" });
 });
 
-app.listen(port, host, () => {
-  console.log(`App listening at http://${host}:${port}/`);
-});
+const startServer = async () => {
+  try {
+    await db.sequelize.sync({alter: true}); //cria todas as tabelas automaticamente
+    console.log("Database synced successfully");
+
+    app.listen(port, host, () => {
+      console.log(`App listening at http://${host}:${port}/`);
+    });
+  } catch (error) {
+    console.error("Failed to sync database:", error);
+    process.exit(1);
+  }
+};
+
+startServer();

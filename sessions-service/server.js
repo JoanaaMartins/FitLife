@@ -3,13 +3,14 @@ import dotenv from "dotenv";
 import classRoutes from "./routes/classRoute.js";
 import instructorRoutes from "./routes/instructorRoute.js";
 import reservationRoutes from "./routes/reservationRoute.js";
-import { connectRabbitMQ } from "./rabbitmq/producer.js";
+import { connectRabbitMQ } from "./rabbitmq/producer.js"; 
+import db from "./models/db.js";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.DB_PORT;
-const host = process.env.DB_HOST;
+const port = process.env.PORT;
+const host = process.env.HOST || "0.0.0.0";
 
 app.use(express.json());
 
@@ -94,6 +95,10 @@ app.use((err, req, res, next) => {
 const startServer = async () => {
   try {
     await connectRabbitMQ();
+
+    
+    await db.sequelize.sync({force:true}); //cria todas as tabelas automaticamente
+    console.log("Database synced successfully");
 
     app.listen(port, host, () => {
       console.log(`App listening at http://${host}:${port}/`);

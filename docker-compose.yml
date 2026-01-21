@@ -1,0 +1,85 @@
+
+services:
+  # Databases
+  mysql:
+    image: mysql:8.0
+    container_name: fitlife_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: micocas1+
+      MYSQL_DATABASE: users_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  mongodb:
+    image: mongo:6
+    container_name: fitlife_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: fitlife_rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  # Services
+  nutrition-service:
+    build: ./nutrition-service
+    container_name: nutrition-service
+    restart: unless-stopped
+    ports:
+      - "4000:4000" 
+    depends_on:
+      - mongodb
+
+  users-service:
+    build: ./users-service
+    container_name: users-service
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mysql
+
+  notifications-service:
+    build: ./notifications-service
+    container_name: notifications-service
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+
+  workout-service:
+    build: ./workout-service
+    container_name: workout-service
+    restart: unless-stopped
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongodb
+
+  sessions-service:
+    build: ./sessions-service
+    container_name: sessions-service
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mysql
+      - rabbitmq
+    env_file:
+      - ./sessions-service/.env 
+
+volumes:
+  mysql_data:
+  mongo_data:

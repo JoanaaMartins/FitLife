@@ -3,7 +3,10 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const RABBITMQ_URL = process.env.RABBITMQ_URL;
+const RABBITMQ_HOST = process.env.RABBITMQ_HOST || "rabbitmq";
+const RABBITMQ_PORT = process.env.RABBITMQ_PORT || 5672;
+
+const RABBITMQ_URL = `amqp://${RABBITMQ_HOST}:${RABBITMQ_PORT}`;
 const RETRY_DELAY = 5000;
 
 export const startConsumer = async () => {
